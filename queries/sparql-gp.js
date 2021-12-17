@@ -100,7 +100,7 @@ module.exports = {
       WHERE {
         GRAPH ?gocam {  
           # Inject gene product ID here
-          ?gene rdf:type <http://identifiers.org/rgd/1586460> .
+          ?gene rdf:type <` + id + `> .
         }
         ?gocam metago:graphType metago:noctuaCam .
         ?gocam dc:title ?title .
@@ -118,7 +118,7 @@ module.exports = {
           ?gpnode2 rdf:type ?gp2 .
           ?gpnode3 rdf:type ?gp3 .
           # Inject gene product ID here
-          FILTER(?gp1 = <http://identifiers.org/rgd/1586460> || ?gp2 = <http://identifiers.org/rgd/1586460> || ?gp3 = <http://identifiers.org/rgd/1586460>)  
+          FILTER(?gp1 = <` + id + `> || ?gp2 = <` + id + `> || ?gp3 = <` + id + `>)  
         }
         FILTER EXISTS {
           ?ind1 rdf:type MF: .

@@ -166,7 +166,8 @@ module.exports = {
             headers: {
                 'Content-Type': 'application/sparql-results+json',
                 'Accept': 'application/json',
-            }
+            },
+            timeout: 60000
         };
 
         ut = this;

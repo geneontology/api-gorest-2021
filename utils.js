@@ -3,8 +3,10 @@ const fetch = require('node-fetch');
 
 var config = require("./config");
 
-module.exports = {
+TIMEOUT = 60000;
 
+module.exports = {
+    
     getData(url) {
         return fetch(url);
     },
@@ -20,7 +22,8 @@ module.exports = {
             headers: {
                 'Content-Type': 'application/sparql-results+json',
                 'Accept': 'application/json',
-            }
+            },
+            timeout: TIMEOUT
         };
 
         return request(options, function (error, response, body) {
@@ -46,7 +49,8 @@ module.exports = {
             headers: {
                 'Content-Type': 'application/sparql-results+json',
                 'Accept': 'application/json',
-            }
+            },
+            timeout: TIMEOUT
         };
         return options;
     },
@@ -124,7 +128,8 @@ module.exports = {
             headers: {
                 'Content-Type': 'application/sparql-results+json',
                 'Accept': 'application/json',
-            }
+            },
+            timeout: TIMEOUT
         };
 
 
@@ -167,7 +172,7 @@ module.exports = {
                 'Content-Type': 'application/sparql-results+json',
                 'Accept': 'application/json',
             },
-            timeout: 60000
+            timeout: TIMEOUT
         };
 
         ut = this;
@@ -238,7 +243,8 @@ module.exports = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json'
-            }
+            },
+            timeout: TIMEOUT
         };
 
         ut = this;
@@ -268,7 +274,8 @@ module.exports = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json'
-            }
+            },
+            timeout: TIMEOUT
         };
         request(options, function (error, response, body) {
             if (error || response.statusCode != 200) {
@@ -309,7 +316,8 @@ module.exports = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json'
-            }
+            },
+            timeout: TIMEOUT
         };
         request(options, function (error, response, body) {
             if (error || response.statusCode != 200) {
@@ -323,7 +331,8 @@ module.exports = {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
-                    }
+                    },
+                    timeout: TIMEOUT
                 };
         
                 request(options2, function (error, response, body) {
@@ -381,7 +390,8 @@ module.exports = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json'
-            }
+            },
+            timeout: TIMEOUT
         };
         request(options, function (error, response, body) {
             if (error || response.statusCode != 200) {
@@ -418,7 +428,8 @@ module.exports = {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
-                    }
+                    },
+                    timeout: TIMEOUT
                 };
         
                 request(options2, function (error, response, body) {
@@ -515,7 +526,8 @@ module.exports = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json'
-            }
+            },
+            timeout: TIMEOUT
         };
         request(options, function (error, response, body) {
             if (error || response.statusCode != 200) {

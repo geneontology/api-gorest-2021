@@ -116,7 +116,11 @@ app.get('/models/gp', function(req, res) {
     gocams = utils.splitTrim(gocams, ",", "<http://model.geneontology.org/", ">");
     utils.fetchAndSend(res, sparqlModels.ModelsGPs(gocams), false, keysArrayGPs);
   } else {
-    utils.fetchAndSend(res, sparqlModels.AllModelsGPs(), false, keysArrayGPs);
+    // Must combine the results per gocam
+    utils.fetchData(sparqlModels.AllModelsGPs(), keysArrayGPs, (error, data) => {
+      utils.addCORS(res);
+      res.send(utils.mergeResults(data, "gocam"));
+    });
   }
 });
 

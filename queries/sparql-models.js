@@ -262,32 +262,32 @@ module.exports = {
     AllModelsGPs() {
         // Transform the array in string
         var encoded = encodeURIComponent(`
+        PREFIX prov: <http://www.w3.org/ns/prov#>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         PREFIX metago: <http://model.geneontology.org/>
-
         PREFIX enabled_by: <http://purl.obolibrary.org/obo/RO_0002333>
         PREFIX in_taxon: <http://purl.obolibrary.org/obo/RO_0002162>
-
-        SELECT ?gocam   (GROUP_CONCAT(distinct ?identifier;separator="` + separator + `") as ?gpids)
-			        	(GROUP_CONCAT(distinct ?name;separator="` + separator + `") as ?gpnames)
-
+        SELECT DISTINCT ?gocam ?gpids ?gpnames
         WHERE 
         {
             GRAPH ?gocam {
                 ?gocam metago:graphType metago:noctuaCam .
+            }
+            FILTER NOT EXISTS {
+                ?gocam prov:wasDerivedFrom ?asserted_cam .
+            }
+            GRAPH ?gocam {
                 ?s enabled_by: ?gpnode .    
-                ?gpnode rdf:type ?identifier .
-                FILTER(?identifier != owl:NamedIndividual) .
-                FILTER(!contains(str(?gocam), "_inferred"))
+                ?gpnode rdf:type ?gpids .
+                FILTER(?gpids != owl:NamedIndividual) .
             }
-            optional {
-                ?identifier rdfs:label ?name
+            OPTIONAL {
+                ?gpids rdfs:label ?label
             }
-            BIND(IF(bound(?name), ?name, ?identifier) as ?name)
+            BIND(COALESCE(?label, ?gpids) AS ?gpnames)
         }
-        GROUP BY ?gocam
         `);
         return "?query=" + encoded;
     },

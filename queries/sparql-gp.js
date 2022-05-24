@@ -98,37 +98,58 @@ module.exports = {
       PREFIX hint: <http://www.bigdata.com/queryHints#>
       SELECT DISTINCT ?gocam ?title
       WHERE {
-        GRAPH ?gocam {  
+        GRAPH ?gocam  {  
           # Inject gene product ID here
           ?gene rdf:type <` + id + `> .
         }
-        ?gocam metago:graphType metago:noctuaCam .
+        FILTER EXISTS {
+          ?gocam metago:graphType metago:noctuaCam .
+        }
         ?gocam dc:title ?title .
-        GRAPH ?gocam {
-          VALUES ?causal { causally_upstream_of_or_within: causally_upstream_of_or_within_negative_effect: causally_upstream_of_or_within_positive_effect: causally_upstream_of: causally_upstream_of_negative_effect: causally_upstream_of_positive_effect: regulates: negatively_regulates: positively_regulates: directly_regulates: directly_positively_regulates: directly_negatively_regulates: directly_activates: indirectly_activates: directly_inhibits: indirectly_inhibits: transitively_provides_input_for: immediately_causally_upstream_of: directly_provides_input_for: }
-          VALUES ?causal2 { causally_upstream_of_or_within: causally_upstream_of_or_within_negative_effect: causally_upstream_of_or_within_positive_effect: causally_upstream_of: causally_upstream_of_negative_effect: causally_upstream_of_positive_effect: regulates: negatively_regulates: positively_regulates: directly_regulates: directly_positively_regulates: directly_negatively_regulates: directly_activates: indirectly_activates: directly_inhibits: indirectly_inhibits: transitively_provides_input_for: immediately_causally_upstream_of: directly_provides_input_for: }
-          #?s enabled_by: ?gpnode . # I don't think this is needed for this query
-          #?gpnode rdf:type ?identifier . # I don't think this is needed for this query
-          ?ind1 enabled_by: ?gpnode1 .
-          ?ind2 enabled_by: ?gpnode2 .
-          ?ind3 enabled_by: ?gpnode3 .
-          ?ind1 ?causal ?ind2 .
-          ?ind2 ?causal2 ?ind3 .
-          ?gpnode1 rdf:type ?gp1 .
-          ?gpnode2 rdf:type ?gp2 .
-          ?gpnode3 rdf:type ?gp3 .
-          # Inject gene product ID here
-          FILTER(?gp1 = <` + id + `> || ?gp2 = <` + id + `> || ?gp3 = <` + id + `>)  
-        }
-        FILTER EXISTS {
-          ?ind1 rdf:type MF: .
-        }
-        FILTER EXISTS {
-          ?ind2 rdf:type MF: .
-        }
-        FILTER EXISTS {
-          ?ind3 rdf:type MF: .
-        }
+        FILTER (
+          EXISTS {  
+            GRAPH ?gocam  {      ?ind1 enabled_by: ?gene . }
+            GRAPH ?gocam { ?ind1 ?causal1 ?ind2 } 
+            ?causal1 rdfs:subPropertyOf* causally_upstream_of: .
+            ?ind1 causally_upstream_of: ?ind2 . 
+            GRAPH ?gocam  {       ?ind2 enabled_by: ?gpnode2 . }
+            GRAPH ?gocam { ?ind2 ?causal2 ?ind3 }
+            ?causal2 rdfs:subPropertyOf* causally_upstream_of: .
+            ?ind2 causally_upstream_of: ?ind3 . 
+            GRAPH ?gocam  {       ?ind3 enabled_by: ?gpnode3 . }
+            FILTER(?gene != ?gpnode2) 
+            FILTER(?gene != ?gpnode3) 
+            FILTER(?gpnode2 != ?gpnode3)
+          } ||  
+          EXISTS {          
+            GRAPH ?gocam  {       ?ind1 enabled_by: ?gpnode1 . }
+            GRAPH ?gocam { ?ind1 ?causal1 ?ind2 } 
+            ?causal1 rdfs:subPropertyOf* causally_upstream_of: .
+            ?ind1 causally_upstream_of: ?ind2 . 
+            GRAPH ?gocam  {          ?ind2 enabled_by: ?gene . }
+            GRAPH ?gocam { ?ind2 ?causal2 ?ind3 }
+            ?causal2 rdfs:subPropertyOf* causally_upstream_of: .
+            ?ind2 causally_upstream_of: ?ind3 . 
+            GRAPH ?gocam  {           ?ind3 enabled_by: ?gpnode3 . }
+            FILTER(?gpnode1 != ?gene) 
+            FILTER(?gpnode1 != ?gpnode3) 
+            FILTER(?gene != ?gpnode3)
+          } ||
+          EXISTS {
+            GRAPH ?gocam  {       ?ind1 enabled_by: ?gpnode1 . }
+            GRAPH ?gocam { ?ind1 ?causal1 ?ind2 } 
+            ?causal1 rdfs:subPropertyOf* causally_upstream_of: .
+            ?ind1 causally_upstream_of: ?ind2 . 
+            GRAPH ?gocam  {           ?ind2 enabled_by: ?gpnode2 . }
+            GRAPH ?gocam { ?ind2 ?causal2 ?ind3 }
+            ?causal2 rdfs:subPropertyOf* causally_upstream_of: .
+            ?ind2 causally_upstream_of: ?ind3 . 
+            GRAPH ?gocam  {         ?ind3 enabled_by: ?gene . }
+            FILTER(?gpnode1 != ?gpnode2) 
+            FILTER(?gpnode1 != ?gene) 
+            FILTER(?gpnode2 != ?gene)
+          }
+        )
       }
       ORDER BY ?gocam
       `);

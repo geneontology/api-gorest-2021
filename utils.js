@@ -123,7 +123,7 @@ module.exports = {
 
     fetchAndSend(expressResponse, sparqlURLQuery, sendOnlyFirst = false, keysArray) {
         var options = {
-            uri: config.rdfStore + sparqlURLQuery,
+            uri: config.rdfStore + sparqlURLQuery.replace(/(%20)+/g, '%20'), // try and trim to help with #5
             method: 'POST',
             headers: {
                 'Content-Type': 'application/sparql-results+json',

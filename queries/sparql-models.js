@@ -362,19 +362,15 @@ module.exports = {
         
         WHERE 
         {
-          VALUES ?causal { causally_upstream_of_or_within: causally_upstream_of_or_within_negative_effect: causally_upstream_of_or_within_positive_effect: 
-                              causally_upstream_of: causally_upstream_of_negative_effect: causally_upstream_of_positive_effect: regulates: 				
-                            negatively_regulates: positively_regulates: directly_regulates: directly_positively_regulates: directly_negatively_regulates:
-                              directly_activates: indirectly_activates: directly_inhibits: indirectly_inhibits: transitively_provides_input_for: 
-                              immediately_causally_upstream_of: directly_provides_input_for: }
-        
+          ?causal1 rdfs:subPropertyOf* causally_upstream_of_or_within: .
+          ?causal2 rdfs:subPropertyOf* causally_upstream_of_or_within: .
           {
             GRAPH ?gocam {                 
               ?gocam metago:graphType metago:noctuaCam .
               ?gocam dc:date ?date .
               ?gocam dc:title ?title .
-              ?ind1 ?causal ?ind2 .     
-              ?ind2 ?causal ?ind3
+              ?ind1 ?causal1 ?ind2 .     
+              ?ind2 ?causal2 ?ind3
             }         
             ?ind1 rdf:type MF: .
             ?ind2 rdf:type MF: .

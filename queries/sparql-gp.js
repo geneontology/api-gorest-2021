@@ -110,12 +110,12 @@ module.exports = {
           EXISTS {  
             GRAPH ?gocam  {      ?ind1 enabled_by: ?gene . }
             GRAPH ?gocam { ?ind1 ?causal1 ?ind2 } 
-            ?causal1 rdfs:subPropertyOf* causally_upstream_of: .
-            ?ind1 causally_upstream_of: ?ind2 . 
+            ?causal1 rdfs:subPropertyOf* causally_upstream_of_or_within: .
+            ?ind1 causally_upstream_of_or_within: ?ind2 . 
             GRAPH ?gocam  {       ?ind2 enabled_by: ?gpnode2 . }
             GRAPH ?gocam { ?ind2 ?causal2 ?ind3 }
-            ?causal2 rdfs:subPropertyOf* causally_upstream_of: .
-            ?ind2 causally_upstream_of: ?ind3 . 
+            ?causal2 rdfs:subPropertyOf* causally_upstream_of_or_within: .
+            ?ind2 causally_upstream_of_or_within: ?ind3 . 
             GRAPH ?gocam  {       ?ind3 enabled_by: ?gpnode3 . }
             FILTER(?gene != ?gpnode2) 
             FILTER(?gene != ?gpnode3) 
@@ -124,12 +124,12 @@ module.exports = {
           EXISTS {          
             GRAPH ?gocam  {       ?ind1 enabled_by: ?gpnode1 . }
             GRAPH ?gocam { ?ind1 ?causal1 ?ind2 } 
-            ?causal1 rdfs:subPropertyOf* causally_upstream_of: .
-            ?ind1 causally_upstream_of: ?ind2 . 
+            ?causal1 rdfs:subPropertyOf* causally_upstream_of_or_within: .
+            ?ind1 causally_upstream_of_or_within: ?ind2 . 
             GRAPH ?gocam  {          ?ind2 enabled_by: ?gene . }
             GRAPH ?gocam { ?ind2 ?causal2 ?ind3 }
-            ?causal2 rdfs:subPropertyOf* causally_upstream_of: .
-            ?ind2 causally_upstream_of: ?ind3 . 
+            ?causal2 rdfs:subPropertyOf* causally_upstream_of_or_within: .
+            ?ind2 causally_upstream_of_or_within: ?ind3 . 
             GRAPH ?gocam  {           ?ind3 enabled_by: ?gpnode3 . }
             FILTER(?gpnode1 != ?gene) 
             FILTER(?gpnode1 != ?gpnode3) 
@@ -138,12 +138,12 @@ module.exports = {
           EXISTS {
             GRAPH ?gocam  {       ?ind1 enabled_by: ?gpnode1 . }
             GRAPH ?gocam { ?ind1 ?causal1 ?ind2 } 
-            ?causal1 rdfs:subPropertyOf* causally_upstream_of: .
-            ?ind1 causally_upstream_of: ?ind2 . 
+            ?causal1 rdfs:subPropertyOf* causally_upstream_of_or_within: .
+            ?ind1 causally_upstream_of_or_within: ?ind2 . 
             GRAPH ?gocam  {           ?ind2 enabled_by: ?gpnode2 . }
             GRAPH ?gocam { ?ind2 ?causal2 ?ind3 }
-            ?causal2 rdfs:subPropertyOf* causally_upstream_of: .
-            ?ind2 causally_upstream_of: ?ind3 . 
+            ?causal2 rdfs:subPropertyOf* causally_upstream_of_or_within: .
+            ?ind2 causally_upstream_of_or_within: ?ind3 . 
             GRAPH ?gocam  {         ?ind3 enabled_by: ?gene . }
             FILTER(?gpnode1 != ?gpnode2) 
             FILTER(?gpnode1 != ?gene) 

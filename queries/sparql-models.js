@@ -358,7 +358,10 @@ module.exports = {
         PREFIX immediately_causally_upstream_of: <http://purl.obolibrary.org/obo/RO_0002412>
         PREFIX directly_provides_input_for: <http://purl.obolibrary.org/obo/RO_0002413>
         
-        SELECT distinct ?gocam ?date ?title
+        SELECT ?gocam ?date ?title (GROUP_CONCAT(distinct ?orcid;separator="` + separator + `") AS ?orcids) 
+                                    (GROUP_CONCAT(distinct ?name;separator="` + separator + `") AS ?names)
+                                    (GROUP_CONCAT(distinct ?providedBy;separator="` + separator + `") AS ?groupids) 
+                                    (GROUP_CONCAT(distinct ?providedByLabel;separator="` + separator + `") AS ?groupnames)
         
         WHERE 
         {
@@ -369,14 +372,25 @@ module.exports = {
               ?gocam metago:graphType metago:noctuaCam .
               ?gocam dc:date ?date .
               ?gocam dc:title ?title .
+              ?gocam dc:contributor ?orcid .
+              ?gocam providedBy: ?providedBy .
+              BIND( IRI(?orcid) AS ?orcidIRI ).
+              BIND( IRI(?providedBy) AS ?providedByIRI ).
               ?ind1 ?causal1 ?ind2 .     
               ?ind2 ?causal2 ?ind3
             }         
             ?ind1 rdf:type MF: .
             ?ind2 rdf:type MF: .
-            ?ind3 rdf:type MF:
+            ?ind3 rdf:type MF: .
+            optional {
+                ?providedByIRI rdfs:label ?providedByLabel .
+            }
+
+            optional { ?orcidIRI rdfs:label ?name }
+            BIND(IF(bound(?name), ?name, ?orcid) as ?name) .
           }
         }        
+        GROUP BY ?gocam ?date ?title 
         ORDER BY ?gocam
         `);        
         return "?query=" + encoded;

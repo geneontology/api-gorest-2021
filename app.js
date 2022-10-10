@@ -83,7 +83,7 @@ app.get('/models', function(req, res) {
     utils.fetchAndSend(res, sparqlPMIDs.PMIDModelList(req.query.pmid), false, keysArrayModels);
   // // send the models with at least 2 causal MF-MFs (recent addition, code below would have to be clean and merge with new API)
   } else if(req.query.causalmf) {
-    utils.fetchAndSend(res, sparqlModels.ModelsWith2CausalMFs(req.query.causalmf), false);
+    utils.fetchAndSend(res, sparqlModels.ModelsWith2CausalMFs(req.query.causalmf), false, keysArrayModels);
 
     // send all models
   } else {

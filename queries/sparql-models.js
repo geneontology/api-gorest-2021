@@ -357,6 +357,10 @@ module.exports = {
         PREFIX transitively_provides_input_for: <http://purl.obolibrary.org/obo/RO_0002414>
         PREFIX immediately_causally_upstream_of: <http://purl.obolibrary.org/obo/RO_0002412>
         PREFIX directly_provides_input_for: <http://purl.obolibrary.org/obo/RO_0002413>
+
+        PREFIX has_input: <http://purl.obolibrary.org/obo/RO_0002233>
+        PREFIX has_output: <http://purl.obolibrary.org/obo/RO_0002234>
+		PREFIX REACTO: <http://purl.obolibrary.org/obo/go/extensions/reacto.owl#>
         
         SELECT ?gocam ?date ?title (GROUP_CONCAT(distinct ?orcid;separator="` + separator + `") AS ?orcids) 
                                     (GROUP_CONCAT(distinct ?name;separator="` + separator + `") AS ?names)
@@ -365,9 +369,9 @@ module.exports = {
         
         WHERE 
         {
-          ?causal1 rdfs:subPropertyOf* causally_upstream_of_or_within: .
-          ?causal2 rdfs:subPropertyOf* causally_upstream_of_or_within: .
           {
+            ?causal1 rdfs:subPropertyOf* causally_upstream_of_or_within: .
+            ?causal2 rdfs:subPropertyOf* causally_upstream_of_or_within: .
             GRAPH ?gocam {                 
               ?gocam metago:graphType metago:noctuaCam .
               ?gocam dc:date ?date .
@@ -382,6 +386,36 @@ module.exports = {
             ?ind1 rdf:type MF: .
             ?ind2 rdf:type MF: .
             ?ind3 rdf:type MF: .
+            optional {
+                ?providedByIRI rdfs:label ?providedByLabel .
+            }
+
+            optional { ?orcidIRI rdfs:label ?name }
+            BIND(IF(bound(?name), ?name, ?orcid) as ?name) .
+          }
+          UNION
+          {
+            GRAPH ?gocam {
+                FILTER EXISTS {
+                ?gocam metago:graphType metago:noctuaCam .
+                }
+                ?gocam dc:date ?date .
+                ?gocam dc:title ?title .
+                ?gocam dc:contributor ?orcid .
+                ?gocam providedBy: ?providedBy .
+                BIND( IRI(?orcid) AS ?orcidIRI ).
+                BIND( IRI(?providedBy) AS ?providedByIRI ).
+                # Chemical intermediate connection
+                GRAPH ?gocam {
+                    ?ind1 has_output: ?chem_ind1 .
+                    ?ind2 has_input: ?chem_ind2 .
+                    ?chem_ind1 a ?chem_type .
+                    ?chem_ind2 a ?chem_type .
+                    FILTER(?chem_type != owl:NamedIndividual) .
+                }
+            }
+            FILTER ( EXISTS { ?ind1 a MF: } || EXISTS { ?ind1 a REACTO:molecular_event } )
+            FILTER ( EXISTS { ?ind2 a MF: } || EXISTS { ?ind2 a REACTO:molecular_event } )
             optional {
                 ?providedByIRI rdfs:label ?providedByLabel .
             }
